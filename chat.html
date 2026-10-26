@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Black Carbon AI Test</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f3f8f5;
+            padding: 40px;
+        }
+
+        .box {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px #ccc;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e7f3eb;
+            border-radius: 10px;
+            min-height: 50px;
+        }
+
+        input {
+            width: 70%;
+            padding: 12px;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: #195c3a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <h1>🌱 Black Carbon AI Assistant</h1>
+
+    <input
+        type="text"
+        id="message"
+        placeholder="Ask something..."
+    >
+
+    <button onclick="sendMessage()">
+        Send
+    </button>
+
+    <div id="result">
+        AI answer will appear here.
+    </div>
+
+</div>
+
+
+<script>
+
+async function sendMessage() {
+
+    const message =
+        document.getElementById("message").value.trim();
+
+    const result =
+        document.getElementById("result");
+
+
+    if (message === "") {
+        result.innerText = "Please type a message.";
+        return;
+    }
+
+
+    result.innerText = "Thinking...";
+
+
+    try {
+
+        const response = await fetch(
+            "ai_chat.php",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    message: message
+                })
+            }
+        );
+
+
+        const text = await response.text();
+
+        console.log(text);
+
+
+        const data = JSON.parse(text);
+
+
+        if (data.success) {
+
+            result.innerText = data.reply;
+
+        } else {
+
+            result.innerText =
+                "Error: " + data.message;
+        }
+
+
+    } catch (error) {
+
+        result.innerText =
+            "Error: " + error.message;
+
+        console.log(error);
+    }
+
+}
+
+</script>
+
+</body>
+</html>
